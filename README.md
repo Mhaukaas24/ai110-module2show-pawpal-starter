@@ -32,6 +32,16 @@ source .venv/bin/activate  # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
+### Run the Streamlit UI
+
+From the project directory in PowerShell:
+
+```powershell
+.\.venv\Scripts\python.exe -m streamlit run app.py
+```
+
+Open the local URL printed by Streamlit (usually `http://localhost:8501`).
+
 ### Suggested workflow
 
 1. Read the scenario carefully and identify requirements and edge cases.
@@ -44,13 +54,20 @@ pip install -r requirements.txt
 
 ## 🖥️ Sample Output
 
-The terminal demo currently lists unfinished tasks in pet and entry order:
+The terminal demo shows time sorting, pet filtering, recurrence, and conflict detection:
 
 ```text
-Today's Schedule
-- Morning walk for Mochi (30 min, daily)
-- Medication for Mochi (5 min, daily)
-- Feeding for Nori (10 min, daily)
+Today's Schedule (sorted by time)
+- 08:00 | Medication for Mochi (5 min, daily) [priority: high]
+- 08:00 | Feeding for Nori (10 min, daily) [priority: medium]
+- 09:00 | Morning walk for Mochi (30 min, daily) [priority: high]
+
+Mochi's unfinished tasks
+- Morning walk
+- Medication
+Warning: Conflict at 08:00: Medication for Mochi, Feeding for Nori
+
+Next medication due: 2026-11-14
 ```
 
 ## 🧪 Testing PawPal+
@@ -75,10 +92,11 @@ Sample test output:
 
 | Feature | Method(s) | Notes |
 |---------|-----------|-------|
-| Task sorting | `Scheduler.get_schedule` | Preserves pet and task entry order. |
-| Filtering | `Scheduler.get_schedule` | Excludes completed tasks. |
-| Conflict handling | — | Not implemented; tasks have durations but no start times. |
-| Recurring tasks | `Task.frequency` | Stored, but not yet used to select tasks by date. |
+| Time sorting | `Scheduler.sort_by_time` | Sorts by `HH:MM`; equal times preserve entry order. |
+| Other sorting | `Scheduler.get_schedule(sort_by)` | Supports priority high-to-low and duration shortest-first. |
+| Filtering | `Scheduler.filter_tasks` / `Scheduler.get_schedule` | Filters by pet, completion status, and due date. |
+| Conflict handling | `Scheduler.detect_conflicts` | Warns about exact matching start times; duration overlap is not checked. |
+| Recurring tasks | `Scheduler.mark_task_complete` | Creates the next daily (+1 day) or weekly (+7 days) occurrence; as-needed tasks do not recur. |
 
 ## 📸 Demo Walkthrough
 

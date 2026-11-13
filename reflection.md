@@ -2,10 +2,22 @@
 
 ## 1. System Design
 
+**Core user actions**
+
+1. Enter basic owner and pet information.
+2. Add or edit pet-care tasks, including duration and priority.
+3. Generate a daily care plan and see why each task was chosen.
+
 **a. Initial design**
 
-- Briefly describe your initial UML design.
-- What classes did you include, and what responsibilities did you assign to each?
+The initial UML uses four classes:
+
+- `Owner` stores the owner's name, daily time availability, preferences, and pets.
+- `Pet` stores a pet's name, species, and care tasks.
+- `CareTask` describes a care activity, its duration, priority, and category.
+- `DailyPlan` groups the tasks selected for one pet on one date and records why they were included.
+
+An owner can have multiple pets, each pet can have multiple care tasks, and a daily plan is for one pet and can include multiple care tasks.
 
 **b. Design changes**
 
@@ -23,8 +35,9 @@
 
 **b. Tradeoffs**
 
-- Describe one tradeoff your scheduler makes.
-- Why is that tradeoff reasonable for this scenario?
+The scheduler flags tasks with the same exact start time, but does not detect
+overlapping durations. This keeps conflict detection simple, but could miss a
+30-minute task at 08:00 overlapping a task at 08:15.
 
 ---
 
