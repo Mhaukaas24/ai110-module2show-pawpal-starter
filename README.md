@@ -4,23 +4,24 @@ You are building **PawPal+**, a Streamlit app that helps a pet owner plan care t
 
 ## Scenario
 
-A busy pet owner needs help staying consistent with pet care. They want an assistant that can:
+A busy pet owner needs help staying consistent with pet care. PawPal+ tracks tasks and helps organize a daily schedule by:
 
-- Track pet care tasks (walks, feeding, meds, enrichment, grooming, etc.)
-- Consider constraints (time available, priority, owner preferences)
-- Produce a daily plan and explain why it chose that plan
+- Recording scheduled times, durations, priorities, and recurrence.
+- Sorting and filtering tasks for the daily schedule.
+- Flagging unfinished tasks with identical start times.
 
 Your job is to design the system first (UML), then implement the logic in Python, then connect it to the Streamlit UI.
 
-## What you will build
+## Features
 
-Your final app should:
+- Keep owner and pet data for the current Streamlit session.
+- Add care tasks with a scheduled time, duration, frequency, and priority.
+- Sort tasks by time, priority, or duration, and filter by pet and completion status.
+- Create the next occurrence when a daily or weekly task is marked complete.
+- Warn when unfinished tasks share an exact start time.
+- Run a terminal demo and an automated test suite.
 
-- Let a user enter basic owner + pet info
-- Let a user add/edit tasks (duration + priority at minimum)
-- Generate a daily schedule/plan based on constraints and priorities
-- Display the plan clearly (and ideally explain the reasoning)
-- Include tests for the most important scheduling behaviors
+The final class diagram is in [`diagrams/uml_final.mmd`](diagrams/uml_final.mmd).
 
 ## Getting started
 
@@ -52,9 +53,60 @@ Open the local URL printed by Streamlit (usually `http://localhost:8501`).
 6. Connect your logic to the Streamlit UI in `app.py`.
 7. Refine UML so it matches what you actually built.
 
-## 🖥️ Sample Output
+## 🧪 Testing PawPal+
 
-The terminal demo shows time sorting, pet filtering, recurrence, and conflict detection:
+The automated tests cover:
+
+- Task completion and adding tasks to a pet.
+- Sorting by time, priority, and duration, including stable ordering for ties.
+- Filtering by pet and completion status.
+- Daily and weekly recurrence, and no recurrence for as-needed tasks.
+- Exact-time conflict warnings, invalid time formats, and an owner with no tasks.
+
+From the project directory with its virtual environment activated, run:
+
+```powershell
+python -m pytest
+```
+
+On Windows PowerShell, you can run it without activating the environment:
+
+```powershell
+.\.venv\Scripts\python.exe -m pytest
+```
+
+Successful test run:
+
+```text
+============================= test session starts =============================
+collected 12 items
+
+tests\test_pawpal.py ............                                        [100%]
+
+============================= 12 passed in 0.06s ==============================
+```
+
+**Confidence level:** ★★★★☆ (4/5). Core scheduler behaviors are covered; duration-overlap detection and broader UI behavior still need additional testing.
+
+## 📐 Smarter Scheduling
+
+| Feature | Method(s) | Notes |
+|---------|-----------|-------|
+| Time sorting | `Scheduler.sort_by_time` | Sorts by `HH:MM`; equal times preserve entry order. |
+| Other sorting | `Scheduler.get_schedule(sort_by)` | Supports priority high-to-low and duration shortest-first. |
+| Filtering | `Scheduler.filter_tasks` / `Scheduler.get_schedule` | Filters by pet, completion status, and due date. |
+| Conflict handling | `Scheduler.detect_conflicts` | Warns about exact matching start times; duration overlap is not checked. |
+| Recurring tasks | `Scheduler.mark_task_complete` | Creates the next daily (+1 day) or weekly (+7 days) occurrence; as-needed tasks do not recur. |
+
+## Demo Walkthrough
+
+1. Enter an owner name and add one or more pets.
+2. Add a task for a pet with a scheduled time, duration, frequency, and priority.
+3. Use the task list to mark a due task complete. Daily and weekly tasks create a next occurrence for one or seven days later.
+4. Choose how to sort and filter the schedule, then select **Generate schedule**.
+5. Review the schedule and any exact-start-time conflict warnings. Move one task to a different time to resolve a warning.
+
+Run the terminal demo with `python main.py`. It shows time sorting, pet filtering, recurrence, and conflict detection:
 
 ```text
 Today's Schedule (sorted by time)
@@ -70,42 +122,4 @@ Warning: Conflict at 08:00: Medication for Mochi, Feeding for Nori
 Next medication due: 2026-11-14
 ```
 
-## 🧪 Testing PawPal+
-
-```bash
-# Run the full test suite:
-pytest
-
-# Run with coverage:
-pytest --cov
-```
-
-Sample test output:
-
-```
-# Paste your pytest output here
-```
-
-## 📐 Smarter Scheduling
-
-> Fill in once you've implemented scheduling logic.
-
-| Feature | Method(s) | Notes |
-|---------|-----------|-------|
-| Time sorting | `Scheduler.sort_by_time` | Sorts by `HH:MM`; equal times preserve entry order. |
-| Other sorting | `Scheduler.get_schedule(sort_by)` | Supports priority high-to-low and duration shortest-first. |
-| Filtering | `Scheduler.filter_tasks` / `Scheduler.get_schedule` | Filters by pet, completion status, and due date. |
-| Conflict handling | `Scheduler.detect_conflicts` | Warns about exact matching start times; duration overlap is not checked. |
-| Recurring tasks | `Scheduler.mark_task_complete` | Creates the next daily (+1 day) or weekly (+7 days) occurrence; as-needed tasks do not recur. |
-
-## 📸 Demo Walkthrough
-
-Describe your app in numbered steps so a reader can follow along without watching a video:
-
-1. <!-- Describe this step -->
-2. <!-- Describe this step -->
-3. <!-- Describe this step -->
-4. <!-- Describe this step -->
-5. <!-- Add more steps as needed -->
-
-**Screenshot or video** *(optional)*: <!-- Insert a screenshot or link to a demo video here -->
+The next-due date changes based on the date the demo is run.

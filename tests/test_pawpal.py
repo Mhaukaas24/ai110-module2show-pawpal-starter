@@ -94,6 +94,15 @@ def test_filter_tasks_by_pet_and_completion_status() -> None:
     ]
 
 
+def test_empty_owner_has_no_schedule_or_conflicts() -> None:
+    scheduler = Scheduler()
+    owner = Owner("Jordan")
+
+    assert scheduler.filter_tasks(owner) == []
+    assert scheduler.get_schedule(owner) == []
+    assert scheduler.detect_conflicts([]) == []
+
+
 @pytest.mark.parametrize(
     ("frequency", "days_until_next"),
     [("daily", 1), ("weekly", 7)],

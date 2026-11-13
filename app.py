@@ -104,6 +104,13 @@ st.subheader("Your pets and tasks")
 if not owner.pets:
     st.info("No pets yet.")
 else:
+    task_headers = st.columns([1, 3, 1, 1, 1, 1.4, 1.2])
+    for column, label in zip(
+        task_headers,
+        ["Time", "Task", "Duration", "Frequency", "Priority", "Due date", "Status"],
+    ):
+        column.caption(label)
+
     for pet_index, pet in enumerate(owner.pets):
         st.markdown(f"**{pet.name} ({pet.species})**")
         if not pet.tasks:
@@ -192,5 +199,16 @@ if st.session_state["show_schedule"]:
             pet_name=pet_name,
             is_completed=False,
         )
-        for warning in scheduler.detect_conflicts(pending_schedule):
-            st.warning(warning)
+        if pending_schedule:
+            conflicts = scheduler.detect_conflicts(pending_schedule)
+            if conflicts:
+                for warning in conflicts:
+                    st.warning(
+                        f"{warning}. Move one task to a different start time."
+                    )
+            else:
+                st.success("No exact-start-time conflicts found.")
+            st.caption(
+                "Conflict checks compare start times only; task-duration overlaps "
+                "are not checked."
+            )

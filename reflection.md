@@ -4,9 +4,9 @@
 
 **Core user actions**
 
-1. Enter basic owner and pet information.
-2. Add or edit pet-care tasks, including duration and priority.
-3. Generate a daily care plan and see why each task was chosen.
+1. Enter owner and pet information.
+2. Add pet-care tasks with a scheduled time, duration, frequency, and priority.
+3. Generate a daily schedule, sort and filter it, and mark due tasks complete.
 
 **a. Initial design**
 
@@ -21,8 +21,12 @@ An owner can have multiple pets, each pet can have multiple care tasks, and a da
 
 **b. Design changes**
 
-- Did your design change during implementation?
-- If yes, describe at least one change and why you made it.
+The initial UML used `CareTask` and `DailyPlan`. During implementation, I followed
+the Phase 2 model of `Task`, `Pet`, `Owner`, and `Scheduler`. The final model
+stores tasks on each pet, while `Scheduler` handles sorting, filtering,
+recurrence, and conflict detection instead of storing a separate `DailyPlan`.
+The task model was extended with scheduled time, due date, and priority to
+support the later scheduling and UI requirements.
 
 ---
 
@@ -30,8 +34,10 @@ An owner can have multiple pets, each pet can have multiple care tasks, and a da
 
 **a. Constraints and priorities**
 
-- What constraints does your scheduler consider (for example: time, priority, preferences)?
-- How did you decide which constraints mattered most?
+The scheduler includes tasks due on or before the selected date, and can filter
+by pet and completion status. It can sort by scheduled time, priority
+(high-to-low), or duration (shortest-first). Priority and duration affect order;
+the scheduler does not optimize around owner availability or preferences.
 
 **b. Tradeoffs**
 
@@ -45,13 +51,16 @@ overlapping durations. This keeps conflict detection simple, but could miss a
 
 **a. How you used AI**
 
-- How did you use AI tools during this project (for example: design brainstorming, debugging, refactoring)?
-- What kinds of prompts or questions were most helpful?
+I used AI to help with coding and testing. A clear feature request, such as
+adding priority to tasks and enabling schedules to sort by priority or duration,
+helped guide the implementation. I kept the phases in one conversation, which
+was useful because earlier design and feature decisions stayed in context.
 
 **b. Judgment and verification**
 
-- Describe one moment where you did not accept an AI suggestion as-is.
-- How did you evaluate or verify what the AI suggested?
+The initial implementation did not include a priority field, so I pointed out
+the gap and prompted AI to add it. I checked the result with the priority-sorting
+tests and planned to try the UI before committing.
 
 ---
 
@@ -59,13 +68,17 @@ overlapping durations. This keeps conflict detection simple, but could miss a
 
 **a. What you tested**
 
-- What behaviors did you test?
-- Why were these tests important?
+The 12 automated tests cover task completion and adding tasks, sorting by time,
+priority, and duration (including ties), filtering by pet and completion status,
+daily and weekly recurrence, non-recurring as-needed tasks, exact-time conflict
+warnings, invalid time formats, and an owner with no tasks. These cases check
+the main scheduler behaviors and important boundary conditions.
 
 **b. Confidence**
 
-- How confident are you that your scheduler works correctly?
-- What edge cases would you test next if you had more time?
+I am 4/5 confident that the core scheduler behaviors work correctly. I would
+next test duration-overlap detection and broader UI interactions, including
+combinations of schedule filters and recurring-task completion.
 
 ---
 
@@ -73,12 +86,13 @@ overlapping durations. This keeps conflict detection simple, but could miss a
 
 **a. What went well**
 
-- What part of this project are you most satisfied with?
+I am most satisfied with having a basic working prototype.
 
 **b. What you would improve**
 
-- If you had another iteration, what would you improve or redesign?
+In another iteration, I would make the UI more intuitive.
 
 **c. Key takeaway**
 
-- What is one important thing you learned about designing systems or working with AI on this project?
+I learned that making design choices early makes it easier to avoid larger
+changes later in implementation.
