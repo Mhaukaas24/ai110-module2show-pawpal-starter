@@ -44,14 +44,13 @@ pip install -r requirements.txt
 
 ## 🖥️ Sample Output
 
-Paste a sample of your app's CLI or Streamlit output here so a reader can see what a generated plan looks like:
+The terminal demo currently lists unfinished tasks in pet and entry order:
 
-```
-# e.g.:
-# Daily plan for Biscuit (Golden Retriever):
-#   08:00 — Morning walk (30 min) [priority: high]
-#   09:00 — Feeding (10 min) [priority: high]
-#   ...
+```text
+Today's Schedule
+- Morning walk for Mochi (30 min, daily)
+- Medication for Mochi (5 min, daily)
+- Feeding for Nori (10 min, daily)
 ```
 
 ## 🧪 Testing PawPal+
@@ -76,10 +75,10 @@ Sample test output:
 
 | Feature | Method(s) | Notes |
 |---------|-----------|-------|
-| Task sorting | | e.g., by priority, duration |
-| Filtering | | e.g., skip tasks if time runs out |
-| Conflict handling | | e.g., overlapping time slots |
-| Recurring tasks | | e.g., daily vs. weekly |
+| Task sorting | `Scheduler.get_schedule` | Preserves pet and task entry order. |
+| Filtering | `Scheduler.get_schedule` | Excludes completed tasks. |
+| Conflict handling | — | Not implemented; tasks have durations but no start times. |
+| Recurring tasks | `Task.frequency` | Stored, but not yet used to select tasks by date. |
 
 ## 📸 Demo Walkthrough
 
